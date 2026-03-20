@@ -11,6 +11,8 @@ coverage/
 out/
 build/
 
+logs/
+
 # Production
 dist/
 
