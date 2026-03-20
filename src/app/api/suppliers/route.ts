@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, created, err, parseBody, getPagination, buildMeta } from "@/lib/api-helpers";
 import { CreateSupplierSchema } from "@/lib/validators";
 import { prisma, generateSupplierCode } from "@/lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 
 export const GET = withAuth(async (req) => {
   const { page, limit, skip, search, sortBy, sortOrder } = getPagination(req.nextUrl.searchParams);

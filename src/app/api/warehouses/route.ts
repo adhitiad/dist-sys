@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, created, err, parseBody, getPagination, buildMeta } from "@/lib/api-helpers";
 import { CreateWarehouseSchema } from "@/lib/validators";
 import { prisma, generateWarehouseCode } from "@/lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 
 // GET /api/warehouses
 export const GET = withAuth(async (req) => {

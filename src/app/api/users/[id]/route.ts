@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, err } from "@/lib/api-helpers";
 import { UpdateUserSchema } from "@/lib/validators";
 import { prisma } from "@/lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 
 type Ctx = { params: Promise<{ id: string }> };
 

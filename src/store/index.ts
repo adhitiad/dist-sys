@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import type { UserRole } from "@prisma/client";
+import type { UserRole } from "@/generated/prisma/client";
 import type { CloudinaryImage } from "@/lib/cloudinary";
 
 // ── Types ─────────────────────────────────────────────────────────

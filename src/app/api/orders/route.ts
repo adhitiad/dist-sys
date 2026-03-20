@@ -10,7 +10,7 @@ import {
 import { prisma } from "@/lib/db";
 import { CreateOrderSchema } from "@/lib/validators";
 import { OrderService } from "@/services/order.service";
-import { OrderStatus, Prisma, UserRole } from "@prisma/client";
+import { OrderStatus, Prisma, UserRole } from "@/generated/prisma/client";
 import { NextRequest } from "next/server";
 
 // GET /api/orders

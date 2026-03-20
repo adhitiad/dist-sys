@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, created, err, parseBody, getPagination, buildMeta } from "@/lib/api-helpers";
 import { CreateProductSchema } from "@/lib/validators";
 import { prisma, generateProductSku } from "@/lib/db";
-import { UserRole, Prisma } from "@prisma/client";
+import { UserRole, Prisma } from "@/generated/prisma/client";
 import slugify from "slugify";
 
 // GET /api/products

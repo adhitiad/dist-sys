@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, created, err, parseBody, getPagination, buildMeta } from "@/lib/api-helpers";
 import { CreatePurchaseOrderSchema } from "@/lib/validators";
 import { prisma, generatePONumber } from "@/lib/db";
-import { UserRole, StockMovementType } from "@prisma/client";
+import { UserRole, StockMovementType } from "@/generated/prisma/client";
 import { StockService } from "@/services/stock.service";
 
 export const GET = withAuth(async (req, _ctx, user) => {

@@ -2,7 +2,7 @@
 import { NextRequest } from "next/server";
 import { withAuth, ok } from "@/lib/api-helpers";
 import { prisma } from "@/lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 
 export const GET = withAuth(async () => {
   const settings = await prisma.setting.findMany({ orderBy: { group: "asc" } });

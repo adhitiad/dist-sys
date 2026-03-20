@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, hasPermission } from "@/lib/auth";
 import { logApiError } from "@/lib/logger";
 import { ZodError } from "zod";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 
 // ── Response helpers ─────────────────────────────────────────────
 

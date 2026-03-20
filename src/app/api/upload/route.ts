@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { withAuth, ok, created, err } from "@/lib/api-helpers";
 import { uploadBuffer, deleteFile, signedUploadParams, FOLDERS } from "@/lib/cloudinary";
 import { logger } from "@/lib/logger";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/generated/prisma/client";
 import type { CloudinaryFolder } from "@/lib/cloudinary";
 
 const MAX_MB   = 5;
