@@ -1,0 +1,890 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// ================================================================
+// AUTH (Better Auth required models)
+// ================================================================
+
+model User {
+  id            String   @id @default(uuid()) @map("_id")
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  role          UserRole @default(PELANGGAN)
+  phone         String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions           Session[]
+  accounts           Account[]
+  warehouseStaff     WarehouseStaff?
+  supplierProfile    Supplier?          @relation("SupplierUser")
+  customerProfile    CustomerProfile?
+  orders             Order[]            @relation("CustomerOrders")
+  createdTransfers   StockTransfer[]    @relation("TransferCreatedBy")
+  approvedTransfers  StockTransfer[]    @relation("TransferApprovedBy")
+  pickerFulfillments OrderFulfillment[] @relation("FulfillmentPicker")
+  packerFulfillments OrderFulfillment[] @relation("FulfillmentPacker")
+  driverFulfillments OrderFulfillment[] @relation("FulfillmentDriver")
+  auditLogs          AuditLog[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  KASIR
+  SUPPLIER
+  PENGELOLA_GUDANG
+  PICKER
+  PACKER
+  PELANGGAN
+  AKUNTAN
+  MANAJER_PENJUALAN
+  MANAJER_PEMBELIAN
+  DRIVER
+}
+
+model Session {
+  id        String   @id @default(uuid()) @map("_id")
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(uuid()) @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(uuid()) @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// ================================================================
+// CUSTOMER PROFILE
+// ================================================================
+
+model CustomerProfile {
+  id            String   @id @default(uuid()) @map("_id")
+  userId        String   @unique
+  customerCode  String   @unique
+  companyName   String?
+  npwp          String?
+  creditLimit   Float    @default(0)
+  paymentTerms  Int      @default(0)
+  loyaltyPoints Int      @default(0)
+  addresses     Json[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("customer_profiles")
+}
+
+// ================================================================
+// WAREHOUSE
+// ================================================================
+
+model Warehouse {
+  id         String   @id @default(uuid()) @map("_id")
+  code       String   @unique
+  name       String
+  address    String
+  city       String
+  province   String
+  postalCode String
+  phone      String?
+  latitude   Float?
+  longitude  Float?
+  capacity   Int?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  staff          WarehouseStaff[]
+  stocks         Stock[]
+  stockMovements StockMovement[]
+  transfersFrom  StockTransfer[]    @relation("TransferFrom")
+  transfersTo    StockTransfer[]    @relation("TransferTo")
+  purchaseOrders PurchaseOrder[]
+  fulfillments   OrderFulfillment[]
+
+  @@map("warehouses")
+}
+
+model WarehouseStaff {
+  id          String   @id @default(uuid()) @map("_id")
+  userId      String   @unique
+  warehouseId String
+  notes       String?
+  assignedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+
+  @@map("warehouse_staff")
+}
+
+// ================================================================
+// PRODUCT CATEGORY
+// ================================================================
+
+enum ProductCategoryType {
+  PAKAIAN
+  AMDK
+  HEALTHY_WATER
+  SWEET_WATER
+  WAFER
+  ROTI
+  COKLAT
+  SNACK_GURIH
+  PERMEN_JELLY
+  MINUMAN_ENERGI
+  SUSU_DAIRY
+  KOPI_TEH
+  PERAWATAN_DIRI
+  PERAWATAN_BAYI
+  PERALATAN_RUMAH
+  KEBUTUHAN_DAPUR
+  LAINNYA
+}
+
+model ProductCategory {
+  id          String              @id @default(uuid()) @map("_id")
+  type        ProductCategoryType @unique
+  name        String
+  description String?
+  icon        String?
+  sortOrder   Int                 @default(0)
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  products Product[]
+
+  @@map("product_categories")
+}
+
+// ================================================================
+// PRODUCT
+// ================================================================
+
+enum ClothingType {
+  KAOS
+  KEMEJA
+  POLO
+  CELANA_PANJANG
+  CELANA_PENDEK
+  CELANA_DALAM
+  JAKET
+  HOODIE
+  SWEATER
+  DRESS
+  ROK
+  PAKAIAN_TIDUR
+  PAKAIAN_OLAHRAGA
+  KAOS_KAKI
+  TOPI
+  PAKAIAN_DALAM_WANITA
+  PAKAIAN_ANAK
+  PAKAIAN_BAYI
+  LAINNYA
+}
+
+enum ClothingSize {
+  FREE_SIZE
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
+  SIZE_28
+  SIZE_29
+  SIZE_30
+  SIZE_31
+  SIZE_32
+  SIZE_33
+  SIZE_34
+  SIZE_36
+  SIZE_38
+  SIZE_40
+}
+
+enum BeveragePackaging {
+  CUP_120ML
+  CUP_240ML
+  BOTOL_250ML
+  BOTOL_330ML
+  BOTOL_500ML
+  BOTOL_600ML
+  BOTOL_750ML
+  BOTOL_1000ML
+  BOTOL_1500ML
+  BOTOL_2000ML
+  GALON_19L
+  KARDUS
+  SACHET
+  POUCH
+  TETRA_PAK
+  KALENG_250ML
+  KALENG_330ML
+}
+
+enum ProductUnit {
+  PCS
+  LUSIN
+  KODI
+  BOX
+  KARTON
+  PACK
+  SACHET
+  BOTOL
+  GALON
+  KG
+  GRAM
+  LITER
+  ML
+}
+
+model Product {
+  id          String  @id @default(uuid()) @map("_id")
+  sku         String  @unique
+  barcode     String?
+  name        String
+  slug        String  @unique
+  description String?
+  categoryId  String
+  brand       String?
+
+  // Cloudinary: array of { publicId, url, width, height }
+  images Json[]
+
+  basePrice    Float
+  sellingPrice Float
+  minPrice     Float?
+  unit         ProductUnit @default(PCS)
+  pcsPerBox    Int?
+  boxPerKarton Int?
+  weight       Float?
+  isVariant    Boolean     @default(false)
+  hasExpiry    Boolean     @default(false)
+  isActive     Boolean     @default(true)
+  featured     Boolean     @default(false)
+
+  // Pakaian
+  clothingType ClothingType?
+  gender       String?
+
+  // Minuman
+  volume    Int?
+  packaging BeveragePackaging?
+
+  // Makanan
+  expiryDays Int?
+
+  tags      String[]
+  metaTitle String?
+  metaDesc  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category       ProductCategory     @relation(fields: [categoryId], references: [id])
+  variants       ProductVariant[]
+  stocks         Stock[]
+  stockMovements StockMovement[]
+  orderItems     OrderItem[]
+  purchaseItems  PurchaseOrderItem[]
+  priceTiers     PriceTier[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id         String        @id @default(uuid()) @map("_id")
+  productId  String
+  sku        String        @unique
+  barcode    String?
+  size       ClothingSize?
+  color      String?
+  colorHex   String?
+  // Cloudinary: { publicId, url }
+  image      Json?
+  attributes Json?
+  priceAdj   Float         @default(0)
+  weight     Float?
+  isActive   Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  product        Product             @relation(fields: [productId], references: [id])
+  stocks         Stock[]
+  stockMovements StockMovement[]
+  orderItems     OrderItem[]
+  purchaseItems  PurchaseOrderItem[]
+
+  @@map("product_variants")
+}
+
+model PriceTier {
+  id        String   @id @default(uuid()) @map("_id")
+  productId String
+  tierName  String
+  minQty    Int
+  price     Float
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("price_tiers")
+}
+
+// ================================================================
+// STOCK
+// ================================================================
+
+model Stock {
+  id           String    @id @default(uuid()) @map("_id")
+  warehouseId  String
+  productId    String
+  variantId    String?
+  quantity     Int       @default(0)
+  reserved     Int       @default(0)
+  minStock     Int       @default(10)
+  maxStock     Int?
+  rackLocation String?
+  lastCountAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@unique([warehouseId, productId, variantId], name: "warehouseId_productId_variantId")
+  @@map("stocks")
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  TRANSFER_OUT
+  TRANSFER_IN
+  ADJUSTMENT
+  RETURN_IN
+  RETURN_OUT
+  DAMAGED
+  EXPIRED
+}
+
+model StockMovement {
+  id            String            @id @default(uuid()) @map("_id")
+  warehouseId   String
+  productId     String
+  variantId     String?
+  type          StockMovementType
+  quantity      Int
+  balanceBefore Int
+  balanceAfter  Int
+  reference     String?
+  referenceType String?
+  notes         String?
+  createdBy     String?
+  createdAt     DateTime          @default(now())
+
+  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@map("stock_movements")
+}
+
+enum StockTransferStatus {
+  DRAFT
+  REQUESTED
+  APPROVED
+  REJECTED
+  IN_TRANSIT
+  RECEIVED
+  PARTIAL_RECEIVED
+  CANCELLED
+}
+
+model StockTransfer {
+  id              String              @id @default(uuid()) @map("_id")
+  transferCode    String              @unique
+  fromWarehouseId String
+  toWarehouseId   String
+  status          StockTransferStatus @default(DRAFT)
+  priority        String              @default("NORMAL")
+  requestedById   String
+  approvedById    String?
+  driverId        String?
+  notes           String?
+  approvalNotes   String?
+  requestedAt     DateTime            @default(now())
+  approvedAt      DateTime?
+  inTransitAt     DateTime?
+  receivedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  fromWarehouse Warehouse           @relation("TransferFrom", fields: [fromWarehouseId], references: [id])
+  toWarehouse   Warehouse           @relation("TransferTo", fields: [toWarehouseId], references: [id])
+  requestedBy   User                @relation("TransferCreatedBy", fields: [requestedById], references: [id])
+  approvedBy    User?               @relation("TransferApprovedBy", fields: [approvedById], references: [id])
+  items         StockTransferItem[]
+
+  @@map("stock_transfers")
+}
+
+model StockTransferItem {
+  id             String  @id @default(uuid()) @map("_id")
+  transferId     String
+  productId      String
+  variantId      String?
+  requestedQty   Int
+  transferredQty Int?
+  receivedQty    Int?
+  condition      String?
+  notes          String?
+
+  transfer StockTransfer @relation(fields: [transferId], references: [id])
+
+  @@map("stock_transfer_items")
+}
+
+// ================================================================
+// SUPPLIER
+// ================================================================
+
+model Supplier {
+  id          String   @id @default(uuid()) @map("_id")
+  userId      String?  @unique
+  code        String   @unique
+  name        String
+  company     String?
+  email       String   @unique
+  phone       String
+  address     String
+  city        String
+  province    String
+  postalCode  String?
+  npwp        String?
+  bankName    String?
+  bankAccount String?
+  bankHolder  String?
+  creditDays  Int      @default(30)
+  isActive    Boolean  @default(true)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user           User?           @relation("SupplierUser", fields: [userId], references: [id])
+  purchaseOrders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+// ================================================================
+// PURCHASE ORDER
+// ================================================================
+
+enum PurchaseOrderStatus {
+  DRAFT
+  SENT
+  CONFIRMED
+  PARTIAL_RECEIVED
+  RECEIVED
+  INVOICED
+  PAID
+  CANCELLED
+}
+
+model PurchaseOrder {
+  id            String              @id @default(uuid()) @map("_id")
+  poNumber      String              @unique
+  supplierId    String
+  warehouseId   String
+  status        PurchaseOrderStatus @default(DRAFT)
+  orderDate     DateTime            @default(now())
+  expectedDate  DateTime?
+  receivedDate  DateTime?
+  subtotal      Float
+  taxPercent    Float               @default(11)
+  tax           Float               @default(0)
+  discount      Float               @default(0)
+  shippingCost  Float               @default(0)
+  total         Float
+  paidAmount    Float               @default(0)
+  dueDate       DateTime?
+  invoiceNumber String?
+  notes         String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  supplier  Supplier            @relation(fields: [supplierId], references: [id])
+  warehouse Warehouse           @relation(fields: [warehouseId], references: [id])
+  items     PurchaseOrderItem[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id          String    @id @default(uuid()) @map("_id")
+  poId        String
+  productId   String
+  variantId   String?
+  quantity    Int
+  receivedQty Int       @default(0)
+  unitPrice   Float
+  discount    Float     @default(0)
+  subtotal    Float
+  expiryDate  DateTime?
+
+  purchaseOrder PurchaseOrder   @relation(fields: [poId], references: [id])
+  product       Product         @relation(fields: [productId], references: [id])
+  variant       ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@map("purchase_order_items")
+}
+
+// ================================================================
+// ORDER
+// ================================================================
+
+enum OrderChannel {
+  ONLINE
+  OFFLINE
+  WHATSAPP
+  MARKETPLACE
+  PHONE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  PICKING
+  PACKING
+  READY
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER_BANK
+  QRIS
+  COD
+  KREDIT
+  DEBIT_CARD
+  CREDIT_CARD
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+  VOID
+}
+
+model Order {
+  id            String         @id @default(uuid()) @map("_id")
+  orderNumber   String         @unique
+  customerId    String?
+  channel       OrderChannel   @default(ONLINE)
+  status        OrderStatus    @default(PENDING)
+  paymentMethod PaymentMethod?
+  paymentStatus PaymentStatus  @default(UNPAID)
+  priority      String         @default("NORMAL")
+
+  customerName  String?
+  customerPhone String?
+  customerEmail String?
+
+  shippingName      String?
+  shippingPhone     String?
+  shippingAddress   String?
+  shippingCity      String?
+  shippingProvince  String?
+  shippingPostal    String?
+  shippingCourier   String?
+  trackingNumber    String?
+  shippingCost      Float     @default(0)
+  estimatedDelivery DateTime?
+
+  subtotal     Float
+  discount     Float   @default(0)
+  discountCode String?
+  taxPercent   Float   @default(0)
+  tax          Float   @default(0)
+  total        Float
+
+  paidAmount   Float     @default(0)
+  changeAmount Float     @default(0)
+  paidAt       DateTime?
+
+  notes         String?
+  internalNotes String?
+  orderedAt     DateTime  @default(now())
+  confirmedAt   DateTime?
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  cancelReason  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  customer     User?             @relation("CustomerOrders", fields: [customerId], references: [id])
+  items        OrderItem[]
+  fulfillment  OrderFulfillment?
+  transactions Transaction[]
+  returns      OrderReturn[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid()) @map("_id")
+  orderId   String
+  productId String
+  variantId String?
+  quantity  Int
+  unitPrice Float
+  discount  Float   @default(0)
+  subtotal  Float
+  notes     String?
+
+  order   Order           @relation(fields: [orderId], references: [id])
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@map("order_items")
+}
+
+enum FulfillmentStatus {
+  ASSIGNED
+  PICKING
+  PICKING_DONE
+  PACKING
+  PACKING_DONE
+  READY_TO_SHIP
+  DISPATCHED
+}
+
+model OrderFulfillment {
+  id           String            @id @default(uuid()) @map("_id")
+  orderId      String            @unique
+  warehouseId  String
+  pickerId     String?
+  packerId     String?
+  driverId     String?
+  status       FulfillmentStatus @default(ASSIGNED)
+  pickedAt     DateTime?
+  packedAt     DateTime?
+  dispatchedAt DateTime?
+  pickingNotes String?
+  packingNotes String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  order     Order     @relation(fields: [orderId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  picker    User?     @relation("FulfillmentPicker", fields: [pickerId], references: [id])
+  packer    User?     @relation("FulfillmentPacker", fields: [packerId], references: [id])
+  driver    User?     @relation("FulfillmentDriver", fields: [driverId], references: [id])
+
+  @@map("order_fulfillments")
+}
+
+model OrderReturn {
+  id           String   @id @default(uuid()) @map("_id")
+  orderId      String
+  returnCode   String   @unique
+  reason       String
+  status       String   @default("PENDING")
+  refundAmount Float    @default(0)
+  items        Json[]
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("order_returns")
+}
+
+// ================================================================
+// TRANSACTION
+// ================================================================
+
+enum TransactionType {
+  SALE
+  PURCHASE
+  STOCK_TRANSFER
+  REFUND
+  EXPENSE
+  ADJUSTMENT
+  PAYMENT_IN
+  PAYMENT_OUT
+}
+
+model Transaction {
+  id            String          @id @default(uuid()) @map("_id")
+  type          TransactionType
+  orderId       String?
+  amount        Float
+  description   String?
+  reference     String?
+  referenceType String?
+  metadata      Json?
+  createdAt     DateTime        @default(now())
+
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@map("transactions")
+}
+
+// ================================================================
+// PROMOTION
+// ================================================================
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  BUY_X_GET_Y
+  MIN_PURCHASE
+}
+
+model Promotion {
+  id          String       @id @default(uuid()) @map("_id")
+  code        String       @unique
+  name        String
+  description String?
+  type        DiscountType
+  value       Float
+  minPurchase Float        @default(0)
+  maxDiscount Float?
+  usageLimit  Int?
+  usedCount   Int          @default(0)
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("promotions")
+}
+
+// ================================================================
+// AUDIT LOG
+// ================================================================
+
+model AuditLog {
+  id        String   @id @default(uuid()) @map("_id")
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  oldData   Json?
+  newData   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// ================================================================
+// NOTIFICATION
+// ================================================================
+
+enum NotificationType {
+  ORDER_NEW
+  ORDER_STATUS_CHANGE
+  STOCK_LOW
+  TRANSFER_REQUEST
+  TRANSFER_APPROVED
+  PURCHASE_ORDER_NEW
+  SYSTEM
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @map("_id")
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+// ================================================================
+// SETTING
+// ================================================================
+
+model Setting {
+  id        String   @id @default(uuid()) @map("_id")
+  key       String   @unique
+  value     Json
+  group     String   @default("general")
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
