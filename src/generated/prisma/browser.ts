@@ -152,3 +152,8 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Setting = Prisma.SettingModel
+/**
+ * Model POSession
+ * 
+ */
+export type POSession = Prisma.POSessionModel

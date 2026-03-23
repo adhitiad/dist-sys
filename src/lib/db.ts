@@ -81,7 +81,7 @@ export async function generateProductSku(categoryCode: string) {
 
 export async function generatePOSSessionCode() {
   const prefix = `POS-${datePart()}`;
-  const count = await prisma.pOSession.count({
+  const count: any = await prisma.pOSession.count({
     where: { sessionCode: { startsWith: prefix } },
   });
   return `${prefix}-${String(count + 1).padStart(3, "0")}`;

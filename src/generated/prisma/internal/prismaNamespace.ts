@@ -410,7 +410,8 @@ export const ModelName = {
   Promotion: 'Promotion',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
-  Setting: 'Setting'
+  Setting: 'Setting',
+  POSession: 'POSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -426,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "customerProfile" | "warehouse" | "warehouseStaff" | "productCategory" | "product" | "productVariant" | "priceTier" | "stock" | "stockMovement" | "stockTransfer" | "stockTransferItem" | "supplier" | "purchaseOrder" | "purchaseOrderItem" | "order" | "orderItem" | "orderFulfillment" | "orderReturn" | "transaction" | "promotion" | "auditLog" | "notification" | "setting"
+    modelProps: "user" | "session" | "account" | "verification" | "customerProfile" | "warehouse" | "warehouseStaff" | "productCategory" | "product" | "productVariant" | "priceTier" | "stock" | "stockMovement" | "stockTransfer" | "stockTransferItem" | "supplier" | "purchaseOrder" | "purchaseOrderItem" | "order" | "orderItem" | "orderFulfillment" | "orderReturn" | "transaction" | "promotion" | "auditLog" | "notification" | "setting" | "pOSession"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2428,6 +2429,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    POSession: {
+      payload: Prisma.$POSessionPayload<ExtArgs>
+      fields: Prisma.POSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.POSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.POSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.POSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.POSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        findMany: {
+          args: Prisma.POSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>[]
+        }
+        create: {
+          args: Prisma.POSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        createMany: {
+          args: Prisma.POSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.POSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.POSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        update: {
+          args: Prisma.POSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.POSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.POSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.POSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.POSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$POSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.POSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePOSession>
+        }
+        groupBy: {
+          args: Prisma.POSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.POSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.POSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.POSessionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2845,7 +2920,8 @@ export const OrderScalarFieldEnum = {
   cancelledAt: 'cancelledAt',
   cancelReason: 'cancelReason',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  posSessionId: 'posSessionId'
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -2978,6 +3054,24 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const POSessionScalarFieldEnum = {
+  id: 'id',
+  sessionCode: 'sessionCode',
+  userId: 'userId',
+  warehouseId: 'warehouseId',
+  openingBalance: 'openingBalance',
+  closingBalance: 'closingBalance',
+  status: 'status',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type POSessionScalarFieldEnum = (typeof POSessionScalarFieldEnum)[keyof typeof POSessionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3477,6 +3571,7 @@ export type GlobalOmitConfig = {
   auditLog?: Prisma.AuditLogOmit
   notification?: Prisma.NotificationOmit
   setting?: Prisma.SettingOmit
+  pOSession?: Prisma.POSessionOmit
 }
 
 /* Types for Logging */

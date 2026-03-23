@@ -1,6 +1,5 @@
 // src/services/pos.service.ts
 import {
-  FulfillmentStatus,
   OrderChannel,
   OrderStatus,
   PaymentStatus,
@@ -32,7 +31,7 @@ export class POSService {
       throw new Error("Anda sudah memiliki sesi POS yang masih aktif.");
     }
 
-    const sessionCode = await generatePOSSessionCode();
+    const sessionCode: any = await generatePOSSessionCode();
 
     return prisma.pOSession.create({
       data: {
@@ -56,7 +55,7 @@ export class POSService {
     input: ClosePOSSessionInput,
     userId: string,
   ) {
-    const session = await prisma.pOSession.findUnique({
+    const session: any = await prisma.pOSession.findUnique({
       where: { id: sessionId },
       include: {
         orders: { select: { total: true, paymentStatus: true } },
@@ -77,8 +76,8 @@ export class POSService {
 
     // Calculate expected balance
     const totalSales = session.orders
-      .filter((o) => o.paymentStatus === "PAID")
-      .reduce((sum, o) => sum + o.total, 0);
+      .filter((o: any) => o.paymentStatus === "PAID")
+      .reduce((sum: any, o: any) => sum + o.total, 0);
 
     const expectedBalance = session.openingBalance + totalSales;
 
@@ -141,7 +140,7 @@ export class POSService {
   // ── Get Session Summary ─────────────────────────────────────────
 
   static async getSessionSummary(sessionId: string) {
-    const session = await prisma.pOSession.findUnique({
+    const session: any = await prisma.pOSession.findUnique({
       where: { id: sessionId },
       include: {
         orders: {
@@ -161,16 +160,20 @@ export class POSService {
       throw new Error("Sesi POS tidak ditemukan.");
     }
 
-    const totalSales = session.orders.reduce((sum, o) => sum + o.total, 0);
+    const totalSales = session.orders.reduce(
+      (sum: any, o: any) => sum + o.total,
+      0,
+    );
     const totalItems = session.orders.reduce(
-      (sum, o) => sum + o.items.reduce((s, i) => s + i.quantity, 0),
+      (sum: any, o: any) =>
+        sum + o.items.reduce((s: any, i: any) => s + i.quantity, 0),
       0,
     );
 
     const transactionsByPayment = await prisma.transaction.groupBy({
       by: ["metadata"],
       where: {
-        orderId: { in: session.orders.map((o) => o.id) },
+        orderId: { in: session.orders.map((o: any) => o.id) },
         type: TransactionType.PAYMENT_IN,
       },
       _sum: { amount: true },
@@ -327,7 +330,11 @@ export class POSService {
 
   // ── Get Products for POS ────────────────────────────────────────
 
-  static async getPOSProducts(warehouseId: string, search?: string, categoryId?: string) {
+  static async getPOSProducts(
+    warehouseId: string,
+    search?: string,
+    categoryId?: string,
+  ) {
     const stocks = await prisma.stock.findMany({
       where: {
         warehouseId,
@@ -352,11 +359,25 @@ export class POSService {
             category: { select: { name: true, icon: true } },
             variants: {
               where: { isActive: true },
-              select: { id: true, sku: true, size: true, color: true, priceAdj: true },
+              select: {
+                id: true,
+                sku: true,
+                size: true,
+                color: true,
+                priceAdj: true,
+              },
             },
           },
         },
-        variant: { select: { id: true, sku: true, size: true, color: true, priceAdj: true } },
+        variant: {
+          select: {
+            id: true,
+            sku: true,
+            size: true,
+            color: true,
+            priceAdj: true,
+          },
+        },
       },
       orderBy: { product: { name: "asc" } },
       take: 100,

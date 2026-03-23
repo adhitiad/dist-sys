@@ -233,6 +233,7 @@ export type UserWhereInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentListRelationFilter
   packerFulfillments?: Prisma.OrderFulfillmentListRelationFilter
   driverFulfillments?: Prisma.OrderFulfillmentListRelationFilter
+  posSessions?: Prisma.POSessionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
 }
 
@@ -258,6 +259,7 @@ export type UserOrderByWithRelationInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentOrderByRelationAggregateInput
   packerFulfillments?: Prisma.OrderFulfillmentOrderByRelationAggregateInput
   driverFulfillments?: Prisma.OrderFulfillmentOrderByRelationAggregateInput
+  posSessions?: Prisma.POSessionOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
 }
 
@@ -286,6 +288,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pickerFulfillments?: Prisma.OrderFulfillmentListRelationFilter
   packerFulfillments?: Prisma.OrderFulfillmentListRelationFilter
   driverFulfillments?: Prisma.OrderFulfillmentListRelationFilter
+  posSessions?: Prisma.POSessionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
 }, "id" | "email">
 
@@ -343,6 +346,7 @@ export type UserCreateInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -368,6 +372,7 @@ export type UserUncheckedCreateInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -393,6 +398,7 @@ export type UserUpdateInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -418,6 +424,7 @@ export type UserUncheckedUpdateInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -711,6 +718,20 @@ export type UserUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.UserUpdateWithoutAuditLogsInput>, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type UserCreateNestedOneWithoutPosSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPosSessionsInput, Prisma.UserUncheckedCreateWithoutPosSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPosSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPosSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPosSessionsInput, Prisma.UserUncheckedCreateWithoutPosSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPosSessionsInput
+  upsert?: Prisma.UserUpsertWithoutPosSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPosSessionsInput, Prisma.UserUpdateWithoutPosSessionsInput>, Prisma.UserUncheckedUpdateWithoutPosSessionsInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   name: string
@@ -732,6 +753,7 @@ export type UserCreateWithoutSessionsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -756,6 +778,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -796,6 +819,7 @@ export type UserUpdateWithoutSessionsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -820,6 +844,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -844,6 +869,7 @@ export type UserCreateWithoutAccountsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -868,6 +894,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -908,6 +935,7 @@ export type UserUpdateWithoutAccountsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -932,6 +960,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -956,6 +985,7 @@ export type UserCreateWithoutCustomerProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -980,6 +1010,7 @@ export type UserUncheckedCreateWithoutCustomerProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1020,6 +1051,7 @@ export type UserUpdateWithoutCustomerProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1044,6 +1076,7 @@ export type UserUncheckedUpdateWithoutCustomerProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1068,6 +1101,7 @@ export type UserCreateWithoutWarehouseStaffInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1092,6 +1126,7 @@ export type UserUncheckedCreateWithoutWarehouseStaffInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1132,6 +1167,7 @@ export type UserUpdateWithoutWarehouseStaffInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1156,6 +1192,7 @@ export type UserUncheckedUpdateWithoutWarehouseStaffInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1180,6 +1217,7 @@ export type UserCreateWithoutCreatedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1204,6 +1242,7 @@ export type UserUncheckedCreateWithoutCreatedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1233,6 +1272,7 @@ export type UserCreateWithoutApprovedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1257,6 +1297,7 @@ export type UserUncheckedCreateWithoutApprovedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1297,6 +1338,7 @@ export type UserUpdateWithoutCreatedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1321,6 +1363,7 @@ export type UserUncheckedUpdateWithoutCreatedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1356,6 +1399,7 @@ export type UserUpdateWithoutApprovedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1380,6 +1424,7 @@ export type UserUncheckedUpdateWithoutApprovedTransfersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1404,6 +1449,7 @@ export type UserCreateWithoutSupplierProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1428,6 +1474,7 @@ export type UserUncheckedCreateWithoutSupplierProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1468,6 +1515,7 @@ export type UserUpdateWithoutSupplierProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1492,6 +1540,7 @@ export type UserUncheckedUpdateWithoutSupplierProfileInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1516,6 +1565,7 @@ export type UserCreateWithoutOrdersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1540,6 +1590,7 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1580,6 +1631,7 @@ export type UserUpdateWithoutOrdersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1604,6 +1656,7 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1628,6 +1681,7 @@ export type UserCreateWithoutPickerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferCreateNestedManyWithoutApprovedByInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1652,6 +1706,7 @@ export type UserUncheckedCreateWithoutPickerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1681,6 +1736,7 @@ export type UserCreateWithoutPackerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferCreateNestedManyWithoutApprovedByInput
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1705,6 +1761,7 @@ export type UserUncheckedCreateWithoutPackerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1734,6 +1791,7 @@ export type UserCreateWithoutDriverFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferCreateNestedManyWithoutApprovedByInput
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
 }
 
@@ -1758,6 +1816,7 @@ export type UserUncheckedCreateWithoutDriverFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1798,6 +1857,7 @@ export type UserUpdateWithoutPickerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUpdateManyWithoutApprovedByNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1822,6 +1882,7 @@ export type UserUncheckedUpdateWithoutPickerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1857,6 +1918,7 @@ export type UserUpdateWithoutPackerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUpdateManyWithoutApprovedByNestedInput
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1881,6 +1943,7 @@ export type UserUncheckedUpdateWithoutPackerFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1916,6 +1979,7 @@ export type UserUpdateWithoutDriverFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUpdateManyWithoutApprovedByNestedInput
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
 }
 
@@ -1940,6 +2004,7 @@ export type UserUncheckedUpdateWithoutDriverFulfillmentsInput = {
   approvedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1965,6 +2030,7 @@ export type UserCreateWithoutAuditLogsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -1989,6 +2055,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  posSessions?: Prisma.POSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2029,6 +2096,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2053,6 +2121,123 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
   packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
   driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  posSessions?: Prisma.POSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPosSessionsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  warehouseStaff?: Prisma.WarehouseStaffCreateNestedOneWithoutUserInput
+  supplierProfile?: Prisma.SupplierCreateNestedOneWithoutUserInput
+  customerProfile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+  createdTransfers?: Prisma.StockTransferCreateNestedManyWithoutRequestedByInput
+  approvedTransfers?: Prisma.StockTransferCreateNestedManyWithoutApprovedByInput
+  pickerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPickerInput
+  packerFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutPackerInput
+  driverFulfillments?: Prisma.OrderFulfillmentCreateNestedManyWithoutDriverInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPosSessionsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  warehouseStaff?: Prisma.WarehouseStaffUncheckedCreateNestedOneWithoutUserInput
+  supplierProfile?: Prisma.SupplierUncheckedCreateNestedOneWithoutUserInput
+  customerProfile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+  createdTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+  pickerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPickerInput
+  packerFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutPackerInput
+  driverFulfillments?: Prisma.OrderFulfillmentUncheckedCreateNestedManyWithoutDriverInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPosSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPosSessionsInput, Prisma.UserUncheckedCreateWithoutPosSessionsInput>
+}
+
+export type UserUpsertWithoutPosSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPosSessionsInput, Prisma.UserUncheckedUpdateWithoutPosSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPosSessionsInput, Prisma.UserUncheckedCreateWithoutPosSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPosSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPosSessionsInput, Prisma.UserUncheckedUpdateWithoutPosSessionsInput>
+}
+
+export type UserUpdateWithoutPosSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  warehouseStaff?: Prisma.WarehouseStaffUpdateOneWithoutUserNestedInput
+  supplierProfile?: Prisma.SupplierUpdateOneWithoutUserNestedInput
+  customerProfile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+  createdTransfers?: Prisma.StockTransferUpdateManyWithoutRequestedByNestedInput
+  approvedTransfers?: Prisma.StockTransferUpdateManyWithoutApprovedByNestedInput
+  pickerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPickerNestedInput
+  packerFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutPackerNestedInput
+  driverFulfillments?: Prisma.OrderFulfillmentUpdateManyWithoutDriverNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPosSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  warehouseStaff?: Prisma.WarehouseStaffUncheckedUpdateOneWithoutUserNestedInput
+  supplierProfile?: Prisma.SupplierUncheckedUpdateOneWithoutUserNestedInput
+  customerProfile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+  createdTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+  pickerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPickerNestedInput
+  packerFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutPackerNestedInput
+  driverFulfillments?: Prisma.OrderFulfillmentUncheckedUpdateManyWithoutDriverNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -2069,6 +2254,7 @@ export type UserCountOutputType = {
   pickerFulfillments: number
   packerFulfillments: number
   driverFulfillments: number
+  posSessions: number
   auditLogs: number
 }
 
@@ -2081,6 +2267,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   pickerFulfillments?: boolean | UserCountOutputTypeCountPickerFulfillmentsArgs
   packerFulfillments?: boolean | UserCountOutputTypeCountPackerFulfillmentsArgs
   driverFulfillments?: boolean | UserCountOutputTypeCountDriverFulfillmentsArgs
+  posSessions?: boolean | UserCountOutputTypeCountPosSessionsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
 }
 
@@ -2153,6 +2340,13 @@ export type UserCountOutputTypeCountDriverFulfillmentsArgs<ExtArgs extends runti
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountPosSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.POSessionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuditLogWhereInput
 }
@@ -2180,6 +2374,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pickerFulfillments?: boolean | Prisma.User$pickerFulfillmentsArgs<ExtArgs>
   packerFulfillments?: boolean | Prisma.User$packerFulfillmentsArgs<ExtArgs>
   driverFulfillments?: boolean | Prisma.User$driverFulfillmentsArgs<ExtArgs>
+  posSessions?: boolean | Prisma.User$posSessionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -2236,6 +2431,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   pickerFulfillments?: boolean | Prisma.User$pickerFulfillmentsArgs<ExtArgs>
   packerFulfillments?: boolean | Prisma.User$packerFulfillmentsArgs<ExtArgs>
   driverFulfillments?: boolean | Prisma.User$driverFulfillmentsArgs<ExtArgs>
+  posSessions?: boolean | Prisma.User$posSessionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -2256,6 +2452,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pickerFulfillments: Prisma.$OrderFulfillmentPayload<ExtArgs>[]
     packerFulfillments: Prisma.$OrderFulfillmentPayload<ExtArgs>[]
     driverFulfillments: Prisma.$OrderFulfillmentPayload<ExtArgs>[]
+    posSessions: Prisma.$POSessionPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2674,6 +2871,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   pickerFulfillments<T extends Prisma.User$pickerFulfillmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pickerFulfillmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderFulfillmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   packerFulfillments<T extends Prisma.User$packerFulfillmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$packerFulfillmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderFulfillmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   driverFulfillments<T extends Prisma.User$driverFulfillmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$driverFulfillmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderFulfillmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posSessions<T extends Prisma.User$posSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$posSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$POSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3353,6 +3551,30 @@ export type User$driverFulfillmentsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.OrderFulfillmentScalarFieldEnum | Prisma.OrderFulfillmentScalarFieldEnum[]
+}
+
+/**
+ * User.posSessions
+ */
+export type User$posSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the POSession
+   */
+  select?: Prisma.POSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the POSession
+   */
+  omit?: Prisma.POSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.POSessionInclude<ExtArgs> | null
+  where?: Prisma.POSessionWhereInput
+  orderBy?: Prisma.POSessionOrderByWithRelationInput | Prisma.POSessionOrderByWithRelationInput[]
+  cursor?: Prisma.POSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.POSessionScalarFieldEnum | Prisma.POSessionScalarFieldEnum[]
 }
 
 /**

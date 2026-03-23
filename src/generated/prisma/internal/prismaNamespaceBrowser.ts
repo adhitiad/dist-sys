@@ -77,7 +77,8 @@ export const ModelName = {
   Promotion: 'Promotion',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
-  Setting: 'Setting'
+  Setting: 'Setting',
+  POSession: 'POSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -474,7 +475,8 @@ export const OrderScalarFieldEnum = {
   cancelledAt: 'cancelledAt',
   cancelReason: 'cancelReason',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  posSessionId: 'posSessionId'
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -607,6 +609,24 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const POSessionScalarFieldEnum = {
+  id: 'id',
+  sessionCode: 'sessionCode',
+  userId: 'userId',
+  warehouseId: 'warehouseId',
+  openingBalance: 'openingBalance',
+  closingBalance: 'closingBalance',
+  status: 'status',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type POSessionScalarFieldEnum = (typeof POSessionScalarFieldEnum)[keyof typeof POSessionScalarFieldEnum]
 
 
 export const SortOrder = {
