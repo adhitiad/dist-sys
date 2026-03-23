@@ -166,6 +166,33 @@ export const CreateSupplierSchema = z.object({
 });
 export const UpdateSupplierSchema = CreateSupplierSchema.partial();
 
+// ── Customer ──────────────────────────────────────────────────────
+const CustomerAddressSchema = z.object({
+  label: z.string().optional(),
+  name: z.string().min(2),
+  phone: z.string().min(10),
+  address: z.string().min(5),
+  city: z.string().min(2),
+  province: z.string().min(2),
+  postalCode: z.string().min(5),
+  isDefault: z.boolean().default(false),
+});
+
+export const CustomerSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  phone: z.string().min(10).optional(),
+  companyName: z.string().optional(),
+  npwp: z.string().optional(),
+  creditLimit: z.number().min(0).default(0),
+  paymentTerms: z.number().int().min(0).default(0),
+  addresses: z.array(CustomerAddressSchema).default([]),
+});
+
+export const UpdateCustomerSchema = CustomerSchema.partial().extend({
+  isActive: z.boolean().optional(),
+});
+
 // ── Purchase Order ───────────────────────────────────────────────
 export const CreatePurchaseOrderSchema = z.object({
   supplierId: ObjectId,
@@ -347,6 +374,8 @@ export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 export type CreateWarehouseInput = z.infer<typeof CreateWarehouseSchema>;
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
 export type CreateSupplierInput = z.infer<typeof CreateSupplierSchema>;
+export type CreateCustomerInput = z.infer<typeof CustomerSchema>;
+export type UpdateCustomerInput = z.infer<typeof UpdateCustomerSchema>;
 export type CreatePurchaseOrderInput = z.infer<
   typeof CreatePurchaseOrderSchema
 >;
