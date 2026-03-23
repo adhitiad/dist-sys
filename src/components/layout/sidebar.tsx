@@ -8,6 +8,7 @@ import {
   ArrowLeftRight,
   BarChart3,
   Building2,
+  Calculator,
   ChevronLeft,
   ChevronRight,
   FileText,
@@ -19,6 +20,7 @@ import {
   Truck,
   Users,
   Warehouse,
+  UserCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,6 +46,18 @@ const NAV: NavItem[] = [
       UserRole.MANAJER_PEMBELIAN,
       UserRole.AKUNTAN,
     ],
+  },
+  {
+    href: "/pos",
+    label: "POS / Kasir",
+    icon: Calculator,
+    roles: [UserRole.OWNER, UserRole.ADMIN, UserRole.KASIR],
+  },
+  {
+    href: "/customers",
+    label: "Pelanggan",
+    icon: UserCircle,
+    roles: [UserRole.OWNER, UserRole.ADMIN, UserRole.MANAJER_PENJUALAN],
   },
   {
     href: "/warehouses",
@@ -80,17 +94,6 @@ const NAV: NavItem[] = [
       UserRole.PICKER,
       UserRole.PACKER,
       UserRole.DRIVER,
-    ],
-  },
-  {
-    href: "/customers",
-    label: "Pelanggan",
-    icon: User,
-    roles: [
-      UserRole.OWNER,
-      UserRole.ADMIN,
-      UserRole.KASIR,
-      UserRole.MANAJER_PENJUALAN,
     ],
   },
   {

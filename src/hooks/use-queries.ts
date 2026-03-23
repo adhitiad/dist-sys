@@ -1,7 +1,6 @@
-// src/hooks/use-queries.ts
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import client from "@/lib/axios";
-import type { CreateOrderInput, CreateTransferInput } from "@/lib/validators";
+import type { ClosePOSSessionInput, CreateOrderInput, CreatePOSSessionInput, CreateTransferInput, POSCheckoutInput } from "@/lib/validators";
 
 // ── Keys ──────────────────────────────────────────────────────────
 export const Q = {
@@ -23,6 +22,8 @@ export const Q = {
   dashboard:      (p?: object)=> ["dashboard", p],
   lowStock:       (wid?: string) => ["low-stock", wid],
   movements:      (wid: string, p?: object) => ["movements", wid, p],
+  posSession:     ()          => ["pos-session"],
+  posProducts:    (wid: string, p?: object) => ["pos-products", wid, p],
 };
 
 // ── Warehouses ────────────────────────────────────────────────────
@@ -202,3 +203,46 @@ export const useLowStock = (warehouseId?: string) => useQuery({
 export const useDeleteUpload = () => useMutation({
   mutationFn: (publicId: string) => client.delete("/api/upload", { data: { publicId } }).then(r => r.data),
 });
+
+// ── POS ──────────────────────────────────────────────────────────
+export const usePOSSession = () => useQuery({
+  queryKey: Q.posSession(),
+  queryFn:  () => client.get("/api/pos/session").then(r => r.data.data),
+  refetchInterval: 30_000,
+});
+
+export const usePOSProducts = (warehouseId: string, p?: { search?: string; categoryId?: string }) => useQuery({
+  queryKey: Q.posProducts(warehouseId, p),
+  queryFn:  () => client.get("/api/pos/products", { params: { warehouseId, ...p } }).then(r => r.data.data),
+  enabled: !!warehouseId,
+  refetchInterval: 30_000,
+  placeholderData: keepPreviousData,
+});
+
+export const useOpenPOSSession = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreatePOSSessionInput) => client.post("/api/pos/session", data).then(r => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: Q.posSession() }),
+  });
+};
+
+export const useClosePOSSession = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: ClosePOSSessionInput) => client.post("/api/pos/session/close", data).then(r => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: Q.posSession() }),
+  });
+};
+
+export const usePOSCheckout = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: POSCheckoutInput) => client.post("/api/pos/checkout", data).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: Q.posSession() });
+      qc.invalidateQueries({ queryKey: ["orders"] });
+      qc.invalidateQueries({ queryKey: ["pos-products"] });
+    },
+  });
+};

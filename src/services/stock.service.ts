@@ -57,9 +57,7 @@ export class StockService {
       },
     });
     // Filter stocks where quantity <= minStock
-    return stocks
-      .filter((s) => s.quantity <= s.minStock)
-      .sort((a, b) => a.quantity - b.quantity);
+    return stocks.filter(s => s.quantity <= s.minStock).sort((a, b) => a.quantity - b.quantity);
   }
 
   // ── Movement (internal) ───────────────────────────────────────
@@ -86,9 +84,7 @@ export class StockService {
 
     // Use raw query with row-level lock for atomic operation
     // This prevents race conditions when multiple transactions try to update the same stock
-    const lockResult = await tx.$queryRaw<
-      Array<{ id: string; quantity: number }>
-    >`
+    const lockResult = await tx.$queryRaw<Array<{ id: string; quantity: number }>>`
       SELECT id, quantity FROM stocks 
       WHERE "warehouseId" = ${p.warehouseId} 
         AND "productId" = ${p.productId} 
@@ -190,7 +186,7 @@ export class StockService {
             variantId: item.variantId ?? null,
           },
         });
-
+        
         const avail = (stock?.quantity ?? 0) - (stock?.reserved ?? 0);
         if (avail < item.requestedQty) {
           const prod = await tx.product.findUnique({
@@ -201,7 +197,7 @@ export class StockService {
             `Stok ${prod?.name ?? item.productId} tidak cukup. Tersedia: ${avail}`,
           );
         }
-
+        
         // Update using the stock id instead of compound key
         if (stock) {
           await tx.stock.update({
@@ -288,7 +284,7 @@ export class StockService {
           reference: transferId,
           referenceType: "TRANSFER",
         });
-
+        
         // Find stock by fields instead of compound key
         const stock = await tx.stock.findFirst({
           where: {
@@ -298,7 +294,7 @@ export class StockService {
           },
           select: { id: true },
         });
-
+        
         if (stock) {
           await tx.stock.update({
             where: { id: stock.id },

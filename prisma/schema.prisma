@@ -34,6 +34,7 @@ model User {
   pickerFulfillments OrderFulfillment[] @relation("FulfillmentPicker")
   packerFulfillments OrderFulfillment[] @relation("FulfillmentPacker")
   driverFulfillments OrderFulfillment[] @relation("FulfillmentDriver")
+  posSessions        POSession[]
   auditLogs          AuditLog[]
 
   @@map("users")
@@ -148,6 +149,7 @@ model Warehouse {
   transfersTo    StockTransfer[]    @relation("TransferTo")
   purchaseOrders PurchaseOrder[]
   fulfillments   OrderFulfillment[]
+  posSessions    POSession[]
 
   @@map("warehouses")
 }
@@ -694,6 +696,8 @@ model Order {
   fulfillment  OrderFulfillment?
   transactions Transaction[]
   returns      OrderReturn[]
+  posSession   POSession?        @relation(fields: [posSessionId], references: [id])
+  posSessionId String?
 
   @@map("orders")
 }
@@ -891,4 +895,29 @@ model Setting {
   updatedAt DateTime @updatedAt
 
   @@map("settings")
+}
+
+// ================================================================
+// POS SESSION
+// ================================================================
+
+model POSession {
+  id             String    @id @default(uuid()) @map("_id")
+  sessionCode    String    @unique
+  userId         String
+  warehouseId    String
+  openingBalance Float     @default(0)
+  closingBalance Float?
+  status         String    @default("OPEN") // OPEN, CLOSED
+  openedAt       DateTime  @default(now())
+  closedAt       DateTime?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  orders    Order[]
+
+  @@map("pos_sessions")
 }

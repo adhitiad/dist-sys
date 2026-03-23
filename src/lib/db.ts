@@ -79,4 +79,20 @@ export async function generateProductSku(categoryCode: string) {
   return `${prefix}-${String(count + 1).padStart(6, "0")}`;
 }
 
+export async function generatePOSSessionCode() {
+  const prefix = `POS-${datePart()}`;
+  const count = await prisma.pOSession.count({
+    where: { sessionCode: { startsWith: prefix } },
+  });
+  return `${prefix}-${String(count + 1).padStart(3, "0")}`;
+}
+
+export async function generatePOSOrderNumber() {
+  const prefix = `POS-${datePart()}`;
+  const count = await prisma.order.count({
+    where: { orderNumber: { startsWith: prefix } },
+  });
+  return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+}
+
 export { prisma };

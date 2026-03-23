@@ -58,29 +58,6 @@ export const CreateUserSchema = z.object({
 });
 export const UpdateUserSchema = CreateUserSchema.partial()
   .omit({ password: true })
-
-// ── Customer ────────────────────────────────────────────────────────
-export const CustomerSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  companyName: z.string().optional(),
-  npwp: z.string().optional(),
-  creditLimit: z.number().min(0).default(0),
-  paymentTerms: z.number().int().min(0).default(0),
-  addresses: z.array(z.object({
-    label: z.string(),
-    name: z.string(),
-    phone: z.string(),
-    address: z.string(),
-    city: z.string(),
-    province: z.string(),
-    postalCode: z.string(),
-    isDefault: z.boolean().default(false),
-  })).default([]),
-});
-
-export const UpdateCustomerSchema = CustomerSchema.partial()
   .extend({
     isActive: z.boolean().optional(),
   });
@@ -330,6 +307,41 @@ export const StockAdjustmentSchema = z.object({
   notes: z.string().min(5, "Catatan wajib minimal 5 karakter"),
 });
 
+// ── POS Session ──────────────────────────────────────────────────
+export const CreatePOSSessionSchema = z.object({
+  warehouseId: ObjectId,
+  openingBalance: z.number().min(0).default(0),
+});
+
+export const ClosePOSSessionSchema = z.object({
+  closingBalance: z.number().min(0),
+  notes: z.string().optional(),
+});
+
+export const POSCheckoutSchema = z.object({
+  warehouseId: ObjectId,
+  customerName: z.string().optional(),
+  customerPhone: z.string().optional(),
+  paymentMethod: z.nativeEnum(PaymentMethod),
+  paidAmount: z.number().positive("Jumlah bayar harus > 0"),
+  discount: z.number().min(0).default(0),
+  notes: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        productId: ObjectId,
+        variantId: z.preprocess(
+          (val) => val === "" ? undefined : val,
+          ObjectId.optional()
+        ),
+        quantity: z.number().int().positive(),
+        unitPrice: z.number().positive(),
+        discount: z.number().min(0).default(0),
+      }),
+    )
+    .min(1, "Minimal 1 item"),
+});
+
 // ── Type exports ──────────────────────────────────────────────────
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 export type CreateWarehouseInput = z.infer<typeof CreateWarehouseSchema>;
@@ -342,4 +354,6 @@ export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
 export type CreateTransferInput = z.infer<typeof CreateTransferSchema>;
 export type StockAdjustmentInput = z.infer<typeof StockAdjustmentSchema>;
 export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusSchema>;
-
+export type CreatePOSSessionInput = z.infer<typeof CreatePOSSessionSchema>;
+export type ClosePOSSessionInput = z.infer<typeof ClosePOSSessionSchema>;
+export type POSCheckoutInput = z.infer<typeof POSCheckoutSchema>;

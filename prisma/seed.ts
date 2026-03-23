@@ -1,5 +1,3 @@
-import "dotenv/config";
-import { prisma } from "@/lib/db";
 // prisma/seed.ts
 import {
   ClothingSize,
@@ -8,7 +6,9 @@ import {
   ProductUnit,
   UserRole,
 } from "@/generated/prisma/client";
+import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import "dotenv/config";
 
 async function main() {
   console.log("🌱 Seeding database...\n");

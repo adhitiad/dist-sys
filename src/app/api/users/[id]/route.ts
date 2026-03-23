@@ -22,6 +22,30 @@ export const GET = withAuth(async (_req, ctx) => {
       createdAt: true,
       warehouseStaff: { include: { warehouse: true } },
       customerProfile: true,
+      orders: {
+        where: { paymentStatus: "PAID" },
+        select: {
+          id: true,
+          orderNumber: true,
+          total: true,
+          status: true,
+          paymentStatus: true,
+          paymentMethod: true,
+          createdAt: true,
+          items: {
+            select: {
+              quantity: true,
+              unitPrice: true,
+              product: { select: { name: true } },
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      },
+      _count: {
+        select: { orders: true },
+      },
     },
   });
   if (!user) return err("Pengguna tidak ditemukan.", 404);

@@ -17,6 +17,17 @@ export type CartItem = {
   quantity: number; unitPrice: number; discount: number;
 };
 
+export type HeldTransaction = {
+  id: string;
+  items: CartItem[];
+  customerName: string;
+  customerPhone: string;
+  discountCode: string;
+  discountAmount: number;
+  heldAt: Date;
+  notes?: string;
+};
+
 export type AppNotif = {
   id: string; type: "success"|"error"|"warning"|"info";
   title: string; message: string; link?: string;
@@ -45,6 +56,13 @@ type Store = {
   cartSubtotal:   () => number;
   cartTotal:      () => number;
   cartCount:      () => number;
+
+  // Held Transactions (Transaksi tertahan)
+  heldTransactions: HeldTransaction[];
+  holdTransaction:  (customerName: string, customerPhone: string, notes?: string) => void;
+  resumeTransaction: (id: string) => void;
+  deleteHeldTransaction: (id: string) => void;
+  heldCount: () => number;
 
   // UI
   sidebarOpen:       boolean;
@@ -96,6 +114,41 @@ export const useStore = create<Store>()(
           cartTotal:    () => get().cartSubtotal() - get().discountAmount,
           cartCount:    () => get().cart.reduce((sum, i) => sum + i.quantity, 0),
 
+          // ── Held Transactions ────────────────────────────────
+          heldTransactions: [],
+          holdTransaction: (customerName, customerPhone, notes) => set(s => {
+            if (s.cart.length === 0) return;
+            const held: HeldTransaction = {
+              id: Math.random().toString(36).slice(2),
+              items: [...s.cart],
+              customerName,
+              customerPhone,
+              discountCode: s.discountCode,
+              discountAmount: s.discountAmount,
+              heldAt: new Date(),
+              notes,
+            };
+            s.heldTransactions.unshift(held);
+            // Keep max 10 held transactions
+            if (s.heldTransactions.length > 10) s.heldTransactions.pop();
+            // Clear cart after holding
+            s.cart = [];
+            s.discountCode = "";
+            s.discountAmount = 0;
+          }),
+          resumeTransaction: (id) => set(s => {
+            const held = s.heldTransactions.find(h => h.id === id);
+            if (!held) return;
+            s.cart = [...held.items];
+            s.discountCode = held.discountCode;
+            s.discountAmount = held.discountAmount;
+            s.heldTransactions = s.heldTransactions.filter(h => h.id !== id);
+          }),
+          deleteHeldTransaction: (id) => set(s => {
+            s.heldTransactions = s.heldTransactions.filter(h => h.id !== id);
+          }),
+          heldCount: () => get().heldTransactions.length,
+
           // ── UI ──────────────────────────────────────────────
           sidebarOpen: true,
           toggleSidebar:  () => set(s => { s.sidebarOpen = !s.sidebarOpen; }),
@@ -118,7 +171,14 @@ export const useStore = create<Store>()(
       ),
       {
         name: "distributor-store",
-        partialize: (s) => ({ cart: s.cart, discountCode: s.discountCode, discountAmount: s.discountAmount, sidebarOpen: s.sidebarOpen, warehouseFilter: s.warehouseFilter }),
+        partialize: (s) => ({ 
+          cart: s.cart, 
+          discountCode: s.discountCode, 
+          discountAmount: s.discountAmount, 
+          sidebarOpen: s.sidebarOpen, 
+          warehouseFilter: s.warehouseFilter,
+          heldTransactions: s.heldTransactions,
+        }),
       }
     )
   )

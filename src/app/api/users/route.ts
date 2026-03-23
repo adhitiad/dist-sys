@@ -26,6 +26,8 @@ export const GET = withAuth(async (req) => {
         id: true, name: true, email: true, role: true, phone: true,
         isActive: true, emailVerified: true, createdAt: true,
         warehouseStaff: { include: { warehouse: { select: { name: true, code: true } } } },
+        customerProfile: { select: { customerCode: true, companyName: true, loyaltyPoints: true, creditLimit: true } },
+        _count: { select: { orders: true } },
       },
     }),
     prisma.user.count({ where }),
