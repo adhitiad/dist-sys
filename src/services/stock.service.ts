@@ -43,23 +43,31 @@ export class StockService {
     return { total, reserved, available: total - reserved };
   }
 
-  static getLowStockItems(warehouseId?: string) {
-    return prisma.stock.findMany({
+  static async getLowStockItems(warehouseId?: string) {
+    // Get all stocks and filter in-memory for low stock comparison
+    // because Prisma doesn't support comparing two columns directly
+    const stocks = await prisma.stock.findMany({
       where: {
         ...(warehouseId ? { warehouseId } : {}),
-        quantity: { lte: prisma.stock.fields.minStock as never },
       },
       include: {
         product: { select: { name: true, sku: true, images: true } },
         variant: { select: { size: true, color: true } },
         warehouse: { select: { name: true, code: true } },
       },
-      orderBy: { quantity: "asc" },
     });
+    // Filter stocks where quantity <= minStock
+    return stocks
+      .filter((s) => s.quantity <= s.minStock)
+      .sort((a, b) => a.quantity - b.quantity);
   }
 
   // ── Movement (internal) ───────────────────────────────────────
 
+  /**
+   * Record stock movement with race condition protection.
+   * Uses atomic UPDATE with RETURNING to get the updated values.
+   */
   static async recordMovement(
     tx: Prisma.TransactionClient,
     p: {
@@ -74,43 +82,66 @@ export class StockService {
       createdBy?: string;
     },
   ) {
-    const stock = await tx.stock.upsert({
-      where: {
-        warehouseId_productId_variantId: {
+    const variantId = p.variantId ?? null;
+
+    // Use raw query with row-level lock for atomic operation
+    // This prevents race conditions when multiple transactions try to update the same stock
+    const lockResult = await tx.$queryRaw<
+      Array<{ id: string; quantity: number }>
+    >`
+      SELECT id, quantity FROM stocks 
+      WHERE "warehouseId" = ${p.warehouseId} 
+        AND "productId" = ${p.productId} 
+        AND ("variantId" = ${variantId} OR ("variantId" IS NULL AND ${variantId}::uuid IS NULL))
+      FOR UPDATE
+    `;
+
+    let stockId: string;
+    let balanceBefore: number;
+
+    if (lockResult.length === 0) {
+      // Stock doesn't exist, create it
+      const newStock = await tx.stock.create({
+        data: {
           warehouseId: p.warehouseId,
           productId: p.productId,
-          variantId: (p.variantId ?? null) as string,
+          variantId: variantId,
+          quantity: 0,
         },
-      },
-      create: {
-        warehouseId: p.warehouseId,
-        productId: p.productId,
-        variantId: p.variantId ?? null,
-        quantity: 0,
-      },
-      update: {},
-    });
+        select: { id: true, quantity: true },
+      });
+      stockId = newStock.id;
+      balanceBefore = 0;
+    } else {
+      stockId = lockResult[0].id;
+      balanceBefore = lockResult[0].quantity;
+    }
 
-    const newQty = stock.quantity + p.quantity;
-    if (newQty < 0)
+    const balanceAfter = balanceBefore + p.quantity;
+
+    // Validate stock availability for OUT operations
+    if (balanceAfter < 0) {
       throw new Error(
-        `Stok tidak mencukupi. Tersedia: ${stock.quantity}, dibutuhkan: ${Math.abs(p.quantity)}`,
+        `Stok tidak mencukupi. Tersedia: ${balanceBefore}, dibutuhkan: ${Math.abs(p.quantity)}`,
       );
+    }
 
+    // Atomic update
     await tx.stock.update({
-      where: { id: stock.id },
-      data: { quantity: newQty },
+      where: { id: stockId },
+      data: { quantity: balanceAfter },
     });
 
+    // Record movement
     await tx.stockMovement.create({
       data: {
         warehouseId: p.warehouseId,
         productId: p.productId,
-        variantId: p.variantId ?? null,
+        variantId: variantId,
         type: p.type,
         quantity: p.quantity,
-        balanceBefore: stock.quantity,
-        balanceAfter: newQty,
+        balanceBefore,
+        balanceAfter,
         reference: p.reference,
         referenceType: p.referenceType,
         notes: p.notes,
@@ -118,7 +149,7 @@ export class StockService {
       },
     });
 
-    return newQty;
+    return balanceAfter;
   }
 
   // ── Adjustment (opname) ───────────────────────────────────────
@@ -151,15 +182,15 @@ export class StockService {
     return prisma.$transaction(async (tx) => {
       // Validasi stok cukup & reservasi
       for (const item of input.items) {
-        const stock = await tx.stock.findUnique({
+        // Use findFirst instead of findUnique because compound key with null doesn't work in Prisma
+        const stock = await tx.stock.findFirst({
           where: {
-            warehouseId_productId_variantId: {
-              warehouseId: input.fromWarehouseId,
-              productId: item.productId,
-              variantId: (item.variantId ?? null) as string,
-            },
+            warehouseId: input.fromWarehouseId,
+            productId: item.productId,
+            variantId: item.variantId ?? null,
           },
         });
+
         const avail = (stock?.quantity ?? 0) - (stock?.reserved ?? 0);
         if (avail < item.requestedQty) {
           const prod = await tx.product.findUnique({
@@ -170,16 +201,23 @@ export class StockService {
             `Stok ${prod?.name ?? item.productId} tidak cukup. Tersedia: ${avail}`,
           );
         }
-        await tx.stock.update({
-          where: {
-            warehouseId_productId_variantId: {
-              warehouseId: input.fromWarehouseId,
-              productId: item.productId,
-              variantId: (item.variantId ?? null) as string,
-            },
-          },
-          data: { reserved: { increment: item.requestedQty } },
-        });
+
+        // Update using the stock id instead of compound key
+        if (stock) {
+          await tx.stock.update({
+            where: { id: stock.id },
+            data: { reserved: { increment: item.requestedQty } },
+          });
+        } else {
+          // Stock record doesn't exist, can't transfer
+          const prod = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { name: true },
+          });
+          throw new Error(
+            `Stok ${prod?.name ?? item.productId} tidak ditemukan di gudang asal.`,
+          );
+        }
       }
 
       return tx.stockTransfer.create({
@@ -250,16 +288,23 @@ export class StockService {
           reference: transferId,
           referenceType: "TRANSFER",
         });
-        await tx.stock.update({
+
+        // Find stock by fields instead of compound key
+        const stock = await tx.stock.findFirst({
           where: {
-            warehouseId_productId_variantId: {
-              warehouseId: t.fromWarehouseId,
-              productId: item.productId,
-              variantId: (item.variantId ?? null) as string,
-            },
+            warehouseId: t.fromWarehouseId,
+            productId: item.productId,
+            variantId: item.variantId ?? null,
           },
-          data: { reserved: { decrement: item.requestedQty } },
+          select: { id: true },
         });
+
+        if (stock) {
+          await tx.stock.update({
+            where: { id: stock.id },
+            data: { reserved: { decrement: item.requestedQty } },
+          });
+        }
       }
       return tx.stockTransfer.update({
         where: { id: transferId },

@@ -31,16 +31,32 @@ export class OrderService {
         input.shippingAddress?.city,
       );
 
-      // Reserve stock
+      // Reserve stock with row-level locking to prevent race conditions
       for (const item of input.items) {
-        const stock = await tx.stock.findFirst({
-          where: {
-            warehouseId,
-            productId: item.productId,
-            variantId: item.variantId ?? null,
-          },
-        });
-        const avail = (stock?.quantity ?? 0) - (stock?.reserved ?? 0);
+        const variantId = item.variantId ?? null;
+
+        // Lock the stock row for update
+        const lockResult = await tx.$queryRaw<
+          Array<{ id: string; quantity: number; reserved: number }>
+        >`
+          SELECT id, quantity, reserved FROM stocks 
+          WHERE "warehouseId" = ${warehouseId} 
+            AND "productId" = ${item.productId} 
+            AND ("variantId" = ${variantId} OR ("variantId" IS NULL AND ${variantId}::uuid IS NULL))
+          FOR UPDATE
+        `;
+
+        if (lockResult.length === 0) {
+          const p = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { name: true },
+          });
+          throw new Error(`Stok ${p?.name ?? item.productId} tidak ditemukan di gudang.`);
+        }
+
+        const stock = lockResult[0];
+        const avail = stock.quantity - stock.reserved;
+
         if (avail < item.quantity) {
           const p = await tx.product.findUnique({
             where: { id: item.productId },
@@ -48,8 +64,10 @@ export class OrderService {
           });
           throw new Error(`Stok ${p?.name} tidak cukup. Tersedia: ${avail}`);
         }
+
+        // Update reserved atomically
         await tx.stock.update({
-          where: { id: stock!.id },
+          where: { id: stock.id },
           data: { reserved: { increment: item.quantity } },
         });
       }

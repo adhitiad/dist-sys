@@ -61,16 +61,9 @@ export const GET = withAuth(
           requestedBy: { select: { name: true } },
           approvedBy: { select: { name: true } },
           items: {
-            // product and variant are not directly related in the schema
-            select: {
-              id: true,
-              productId: true,
-              variantId: true,
-              requestedQty: true,
-              transferredQty: true,
-              receivedQty: true,
-              condition: true,
-              notes: true,
+            include: {
+              product: { select: { id: true, name: true, sku: true, images: true } },
+              variant: { select: { id: true, size: true, color: true, colorHex: true } },
             },
           },
         },

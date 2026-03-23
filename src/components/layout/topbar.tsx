@@ -49,12 +49,12 @@ export function Topbar({ title }: { title?: string }) {
                 </div>
                 <div className="max-h-72 overflow-y-auto">
                   {/* Low stock alerts */}
-                  {(lowStock ?? []).map((item: { product: { name: string }; warehouse: { name: string }; quantity: number; minStock: number }, i: number) => (
+                  {(lowStock ?? []).map((item: { product?: { name: string } | null; warehouse?: { name: string } | null; quantity: number; minStock: number }, i: number) => (
                     <div key={i} className="flex gap-3 px-4 py-3 hover:bg-muted/30 border-b border-border/50">
                       <div className="h-2 w-2 mt-1.5 rounded-full bg-yellow-500 shrink-0" />
                       <div>
-                        <p className="text-xs font-medium">Stok Menipis: {item.product.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.warehouse.name} — Sisa {item.quantity}/{item.minStock}</p>
+                        <p className="text-xs font-medium">Stok Menipis: {item.product?.name ?? "Unknown"}</p>
+                        <p className="text-xs text-muted-foreground">{item.warehouse?.name ?? "Unknown"} — Sisa {item.quantity}/{item.minStock}</p>
                       </div>
                     </div>
                   ))}

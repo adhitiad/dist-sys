@@ -83,6 +83,17 @@ const NAV: NavItem[] = [
     ],
   },
   {
+    href: "/customers",
+    label: "Pelanggan",
+    icon: User,
+    roles: [
+      UserRole.OWNER,
+      UserRole.ADMIN,
+      UserRole.KASIR,
+      UserRole.MANAJER_PENJUALAN,
+    ],
+  },
+  {
     href: "/stock-transfers",
     label: "Transfer Stok",
     icon: ArrowLeftRight,
@@ -232,12 +243,12 @@ export function Sidebar() {
         {sidebarOpen && user ? (
           <div className="mb-2 flex items-center gap-2 px-1">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-              {user.name.slice(0, 2).toUpperCase()}
+              {(user.name ?? "U").slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-xs font-semibold">{user.name}</p>
+              <p className="truncate text-xs font-semibold">{user.name ?? "Unknown"}</p>
               <p className="truncate text-xs text-muted-foreground">
-                {user.role.replace(/_/g, " ")}
+                {(user.role ?? "USER").replace(/_/g, " ")}
               </p>
             </div>
           </div>

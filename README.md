@@ -1,6 +1,6 @@
 # 🚛 Distributor System
 
-Sistem manajemen distribusi multi-gudang lengkap — Next.js 15, MongoDB, TypeScript, Cloudinary.
+Sistem manajemen distribusi multi-gudang lengkap — Next.js 16, PostgreSQL, TypeScript, Cloudinary.
 
 ---
 
@@ -8,15 +8,15 @@ Sistem manajemen distribusi multi-gudang lengkap — Next.js 15, MongoDB, TypeSc
 
 | Layer | Teknologi |
 |---|---|
-| Framework | Next.js 15 (App Router) + TypeScript |
-| Database | MongoDB + Prisma 6 |
+| Framework | Next.js 16 (App Router) + TypeScript |
+| Database | PostgreSQL + Prisma 7 |
 | Auth | Better Auth (Email + Google OAuth) |
 | Storage | **Cloudinary** (gambar produk, avatar, dokumen) |
 | Validasi | Zod |
 | State | Zustand + Immer |
 | Data Fetching | TanStack React Query v5 |
 | HTTP | Axios |
-| UI | Tailwind CSS v4 + shadcn/ui |
+| UI | Tailwind CSS v3 + shadcn/ui |
 | Form | React Hook Form + Zod Resolver |
 | Chart | Recharts |
 | Log | Winston + Daily Rotate File |
@@ -112,8 +112,9 @@ cp .env.example .env
 Isi file `.env`:
 
 ```env
-# Database
-DATABASE_URL="mongodb+srv://user:pass@cluster.mongodb.net/distributor"
+# Database (PostgreSQL)
+DATABASE_URL="postgresql://user:pass@localhost:5432/distributor?schema=public"
+DIRECT_URL="postgresql://user:pass@localhost:5432/distributor?schema=public"
 
 # Better Auth
 BETTER_AUTH_SECRET=random-string-32-chars-minimum
@@ -140,8 +141,11 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=distributor-unsigned
 # Generate Prisma Client
 npm run db:generate
 
-# Push schema ke MongoDB
+# Push schema ke PostgreSQL
 npm run db:push
+
+# Jalankan migrasi (opsional, untuk produksi)
+npx prisma migrate dev
 
 # Seed data awal (akun + gudang + produk sample)
 npm run db:seed
@@ -253,7 +257,7 @@ npm run dev          # Development server
 npm run build        # Production build
 npm run type-check   # TypeScript check
 npm run db:generate  # Generate Prisma Client
-npm run db:push      # Push schema ke MongoDB
+npm run db:push      # Push schema ke PostgreSQL
 npm run db:studio    # Buka Prisma Studio
 npm run db:seed      # Seed data awal
 ```

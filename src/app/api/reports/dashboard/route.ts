@@ -20,12 +20,11 @@ export const GET = withAuth(async (req) => {
       take:   5,
     }),
 
-    // Stok menipis
+    // Stok menipis (filter in-memory karena Prisma tidak support column comparison)
     prisma.stock.findMany({
-      where: { quantity: { lte: prisma.stock.fields.minStock as never } },
       include: { product: { select: { name: true, sku: true } }, warehouse: { select: { name: true } } },
-      take: 10,
-    }),
+      take: 50,
+    }).then(stocks => stocks.filter(s => s.quantity <= s.minStock).slice(0, 10)),
 
     // 5 order terbaru
     prisma.order.findMany({

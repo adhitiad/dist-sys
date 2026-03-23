@@ -12,7 +12,11 @@ import {
 import { z } from "zod";
 
 // ── Common ───────────────────────────────────────────────────────
-export const ObjectId = z.string().length(24, "ID tidak valid");
+// UUID v4 format for PostgreSQL
+export const UUID = z.string().uuid("ID tidak valid (harus UUID)");
+
+// Backward compatibility alias
+export const ObjectId = UUID;
 
 export const Pagination = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -47,11 +51,39 @@ export const CreateUserSchema = z.object({
   password: z.string().min(8),
   phone: z.string().optional(),
   role: z.nativeEnum(UserRole).default(UserRole.PELANGGAN),
-  warehouseId: ObjectId.optional(),
+  warehouseId: z.preprocess(
+    (val) => val === "" ? undefined : val,
+    UUID.optional()
+  ),
 });
-export const UpdateUserSchema = CreateUserSchema.partial().omit({
-  password: true,
+export const UpdateUserSchema = CreateUserSchema.partial()
+  .omit({ password: true })
+
+// ── Customer ────────────────────────────────────────────────────────
+export const CustomerSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  phone: z.string().optional(),
+  companyName: z.string().optional(),
+  npwp: z.string().optional(),
+  creditLimit: z.number().min(0).default(0),
+  paymentTerms: z.number().int().min(0).default(0),
+  addresses: z.array(z.object({
+    label: z.string(),
+    name: z.string(),
+    phone: z.string(),
+    address: z.string(),
+    city: z.string(),
+    province: z.string(),
+    postalCode: z.string(),
+    isDefault: z.boolean().default(false),
+  })).default([]),
 });
+
+export const UpdateCustomerSchema = CustomerSchema.partial()
+  .extend({
+    isActive: z.boolean().optional(),
+  });
 
 // ── Warehouse ────────────────────────────────────────────────────
 export const CreateWarehouseSchema = z.object({
@@ -170,7 +202,10 @@ export const CreatePurchaseOrderSchema = z.object({
     .array(
       z.object({
         productId: ObjectId,
-        variantId: ObjectId.optional(),
+        variantId: z.preprocess(
+          (val) => val === "" ? undefined : val,
+          ObjectId.optional()
+        ),
         quantity: z.number().int().positive(),
         unitPrice: z.number().positive(),
         discount: z.number().min(0).default(0),
@@ -208,7 +243,10 @@ export const CreateOrderSchema = z.object({
     .array(
       z.object({
         productId: ObjectId,
-        variantId: ObjectId.optional(),
+        variantId: z.preprocess(
+          (val) => val === "" ? undefined : val,
+          ObjectId.optional()
+        ),
         quantity: z.number().int().positive(),
         unitPrice: z.number().positive(),
         discount: z.number().min(0).default(0),
@@ -252,7 +290,10 @@ export const CreateTransferSchema = z
       .array(
         z.object({
           productId: ObjectId,
-          variantId: ObjectId.optional(),
+          variantId: z.preprocess(
+            (val) => val === "" ? undefined : val,
+            ObjectId.optional()
+          ),
           requestedQty: z.number().int().positive(),
           notes: z.string().optional(),
         }),
@@ -280,7 +321,10 @@ export const ReceiveTransferSchema = z.object({
 export const StockAdjustmentSchema = z.object({
   warehouseId: ObjectId,
   productId: ObjectId,
-  variantId: ObjectId.optional(),
+  variantId: z.preprocess(
+    (val) => val === "" ? undefined : val,
+    ObjectId.optional()
+  ),
   type: z.nativeEnum(StockMovementType),
   quantity: z.number().int(),
   notes: z.string().min(5, "Catatan wajib minimal 5 karakter"),
@@ -298,3 +342,4 @@ export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
 export type CreateTransferInput = z.infer<typeof CreateTransferSchema>;
 export type StockAdjustmentInput = z.infer<typeof StockAdjustmentSchema>;
 export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusSchema>;
+
